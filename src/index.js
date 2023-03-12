@@ -34,7 +34,7 @@ async function fetchPhotos(search, page) {
   const response = await axios.get(
     `https://pixabay.com/api/?key=34327121-8f2f868c5eb1d27b3154ab1d3&q=${search}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`
   );
-  console.log(response);
+
   refs.loadMoreBtn.classList.remove('is-hidden');
   const photos = await response.data.hits;
   const total = await response.data.totalHits;
