@@ -38,13 +38,13 @@ async function fetchPhotos(search, page) {
   refs.loadMoreBtn.classList.remove('is-hidden');
   const photos = await response.data.hits;
   const total = await response.data.totalHits;
-
-  Notiflix.Notify.info(`Hooray! We found ${total} images.`);
+  if (total > 0) {
+    Notiflix.Notify.info(`Hooray! We found ${total} images.`);
+  }
   if (photos.length === 0) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    refs.loadMoreBtn.classList.add('is-hidden');
   } else if (photos.length < 39 && photos.length > 0) {
     Notiflix.Notify.failure(
       "We're sorry, but you've reached the end of search results."
