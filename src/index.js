@@ -44,6 +44,7 @@ async function fetchPhotos(search, page) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
+    refs.loadMoreBtn.classList.add('is-hidden');
   } else if (photos.length < 39 && photos.length > 0) {
     Notiflix.Notify.failure(
       "We're sorry, but you've reached the end of search results."
