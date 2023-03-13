@@ -12,6 +12,11 @@ const refs = {
 };
 let searchValue = '';
 let page = 1;
+let lightBox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+  scrollZoom: false,
+});
 const onFormSubmit = e => {
   page = 1;
 
@@ -19,8 +24,10 @@ const onFormSubmit = e => {
   refs.gallery.innerHTML = '';
   refs.items = [];
   refs.loadMoreBtn.classList.add('is-hidden');
-  searchValue = e.target.elements[0].value;
-  fetchPhotos(searchValue, page);
+  searchValue = e.target.elements[0].value.trim();
+  if (searchValue) {
+    fetchPhotos(searchValue, page);
+  }
 };
 const onLoadMoreBtn = () => {
   page += 1;
@@ -38,13 +45,14 @@ async function fetchPhotos(search, page) {
   refs.loadMoreBtn.classList.remove('is-hidden');
   const photos = await response.data.hits;
   const total = await response.data.totalHits;
-  if (total > 0) {
+  if (total > 0 && page === 1) {
     Notiflix.Notify.info(`Hooray! We found ${total} images.`);
   }
   if (photos.length === 0) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
+    refs.loadMoreBtn.classList.add('is-hidden');
   } else if (photos.length < 39 && photos.length > 0) {
     Notiflix.Notify.failure(
       "We're sorry, but you've reached the end of search results."
@@ -52,9 +60,8 @@ async function fetchPhotos(search, page) {
     refs.loadMoreBtn.classList.add('is-hidden');
   }
 
-  refs.items = [...refs.items, ...photos];
+  refs.items = [...photos];
   renderMarkup();
-  // refresh();
 }
 
 function renderMarkup() {
@@ -80,11 +87,6 @@ function renderMarkup() {
 </div></a>`;
     })
     .join('');
-  refs.gallery.innerHTML = markup;
-  const a = new SimpleLightbox('.gallery a', {
-    captionsData: 'alt',
-    captionPosition: 'bottom',
-    captionDelay: 250,
-    scrollZoom: false,
-  });
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  lightBox.refresh();
 }
